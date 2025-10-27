@@ -1,0 +1,8 @@
+README.md
+pyproject.toml
+mc_core/__init__.py
+montecarlo_statistical_methods.egg-info/PKG-INFO
+montecarlo_statistical_methods.egg-info/SOURCES.txt
+montecarlo_statistical_methods.egg-info/dependency_links.txt
+montecarlo_statistical_methods.egg-info/requires.txt
+montecarlo_statistical_methods.egg-info/top_level.txt

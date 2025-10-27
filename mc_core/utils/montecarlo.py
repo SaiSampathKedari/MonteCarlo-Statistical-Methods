@@ -13,19 +13,25 @@ def monte_carlo(num_samples: int,
                 sample_generator: Callable[[int], np.ndarray],
                 g_evaluator: Callable[[np.ndarray], np.ndarray],
                 cumsum: bool= False):
-    """Perform Monte Carlo sampling.
+    """
+    Perform Monte Carlo sampling.
 
     Inputs
     ------
-    num_samples: number of samples
-    sample_generator: A function that generates samples with signature sample_generator(nsamples)
-    g_evaluator: a function that takes as inputs the samples and outputs the evaluations.
+    num_samples: int
+        number of samples
+    sample_generator: Callable[[int], np.ndarray]
+        A function that generates samples with signature sample_generator(nsamples)
+    g_evaluator: Callable[[np.ndarray], np.ndarray] 
+        Function that takes as inputs the samples and outputs the evaluations.
                  The outputs can be any dimension, however the first dimension should have size *num_samples*
-    cumsum: An option to return estimators of all sample sizes up to num_samples
+    cumsum: bool, optional 
+        An option to return estimators of all sample sizes up to num_samples
 
     Returns
     -------
-    A Monte Carlo estimator of the mean, samples, and evaluations
+    MonteCarloEstimate:
+        A Monte Carlo estimator of the mean, samples, and evaluations
     """
     samples = sample_generator(num_samples)
     evaluations = g_evaluator(samples)
