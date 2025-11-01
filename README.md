@@ -9,4 +9,4 @@ This repository will include step-by-step implementations and visualizations of 
 5. Bayesian inference and filtering basics
 6. Applications to statistical estimation, learning, and robotics
 
-🚧 Work in progress — starting with fundamental sampling and convergence demos.
+🚧 Work in progress, starting with fundamental sampling and convergence demos.
