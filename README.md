@@ -4,7 +4,7 @@ This repository will include step-by-step implementations and visualizations of 
 
 1. Random variable generation (Inverse Transform, Accept–Reject, Importance Sampling)
 2. Monte Carlo estimation and convergence (WLLN, SLLN, CLT)
-3. Variance reduction methods (Control Variates, Antithetic Sampling)
+3. Variance reduction methods (Control Variates, Antithetic Sampling, Multilevel Control Variates)
 4. Markov Chain Monte Carlo (MCMC) algorithms
 5. Bayesian inference and filtering basics
 6. Applications to statistical estimation, learning, and robotics
