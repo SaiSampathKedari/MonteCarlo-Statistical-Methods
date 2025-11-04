@@ -86,6 +86,7 @@ coverage.xml
 pytest_cache/
 logs/
 *.log
+notebooks/images/
 
 # ---------------------------------------------------------------------------
 # Project-specific
