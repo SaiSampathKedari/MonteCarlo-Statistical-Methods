@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Google Search Console (reuse your token) -->
+  <!-- <meta name="google-site-verification" content="IWjrJMnvlawH7rGbfjRi0pACtdTmTmeDLeyyDcO9-bc" /> -->
+
+  <title>Monte Carlo Statistical Methods | Sai Sampath Kedari</title>
+  <meta name="description" content="Step-by-step implementations and visualizations of Monte Carlo techniques: sampling (inverse transform, accept–reject, importance), LLN/SLLN/CLT demos, variance reduction, MCMC, and Bayesian basics for robotics and inference." />
+  <meta name="keywords" content="Monte Carlo, Inverse Transform, Accept-Reject, Importance Sampling, LLN, SLLN, CLT, Control Variates, Antithetic, Multilevel Control Variates, MCMC, Bayesian Inference, Robotics, State Estimation" />
+  <meta name="author" content="Sai Sampath Kedari" />
+
+  <style>
+    body {font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Ubuntu, Arial;
+          background:#0b0f17; color:#e5e7eb; margin:0; line-height:1.6;}
+    main {max-width: 980px; margin: auto; padding: 42px 20px;}
+    h1 {font-size: 2.1rem; margin: 0 0 .4rem;}
+    h2 {color:#93c5fd; margin-top:1.6rem;}
+    a {color:#60a5fa; text-decoration:none;}
+    a:hover {text-decoration:underline;}
+    ul {margin-left:1.15rem;}
+    .muted {color:#9ca3af;}
+    .panel {background:#111827; border:1px solid #1f2937; border-radius:14px; padding:18px; margin:18px 0;}
+    .grid {display:grid; gap:16px; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));}
+    footer {margin-top:42px; border-top:1px solid #1f2937; padding-top:18px; color:#9ca3af; font-size:.95rem;}
+    .btn {display:inline-block; border:1px solid #1f2937; background:#0f172a; padding:10px 14px; border-radius:10px;}
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Monte Carlo Statistical Methods</h1>
+    <p class="muted">Step-by-step implementations and visualizations of core Monte Carlo techniques for statistical inference, learning, and robotics.</p>
+
+    <p>
+      🧠 <a class="btn" href="https://github.com/SaiSampathKedari/MonteCarlo-Statistical-Methods" target="_blank">View Repository on GitHub</a>
+      &nbsp; &nbsp; 📂 <a class="btn" href="https://github.com/SaiSampathKedari" target="_blank">All Repos</a>
+    </p>
+
+    <section class="panel">
+      <h2>Scope</h2>
+      <ol>
+        <li><strong>Random Variable Generation</strong>: Inverse Transform, Accept–Reject, Importance Sampling.</li>
+        <li><strong>Monte Carlo Estimation & Convergence</strong>: WLLN, SLLN, CLT demos with diagnostics.</li>
+        <li><strong>Variance Reduction</strong>: Control Variates, Antithetic Sampling, Multilevel Control Variates.</li>
+        <li><strong>MCMC Algorithms</strong>: Metropolis–Hastings, Gibbs sampling; tuning & convergence checks.</li>
+        <li><strong>Bayesian Basics</strong>: Posterior simulation, simple filtering links.</li>
+        <li><strong>Applications</strong>: Estimation, learning, and robotics-flavored examples.</li>
+      </ol>
+      <p class="muted">🚧 Work in progress — starting with fundamental sampling and convergence demos.</p>
+    </section>
+
+    <section class="grid">
+      <div class="panel">
+        <h2>Notebook Index (planned)</h2>
+        <ul>
+          <li>Sampling: inverse transform, accept–reject, importance</li>
+          <li>Convergence: LLN/SLLN/CLT visual demos</li>
+          <li>Variance reduction: control & antithetic variates</li>
+          <li>MCMC: MH, Gibbs; trace/rhat/ESS checks</li>
+        </ul>
+        <p class="muted">Add notebooks under <code>/notebooks/</code> and link them here as they publish.</p>
+      </div>
+
+      <div class="panel">
+        <h2>Related Projects</h2>
+        <ul>
+          <li><a href="https://saisampathkedari.github.io/Statistical-Inference-Theory/">Statistical Inference Theory</a></li>
+          <li><a href="https://saisampathkedari.github.io/UMich-IOE611-Convex-Optimization/">Convex Optimization (IOE 611)</a></li>
+          <li><a href="https://saisampathkedari.github.io/Bayesian-Filtering-and-Smoothing/">Bayesian Filtering & Smoothing</a></li>
+        </ul>
+      </div>
+
+      <div class="panel">
+        <h2>Keywords</h2>
+        <p class="muted">Monte Carlo, sampling, importance sampling, variance reduction, control variates, antithetic, multilevel, MCMC, MH, Gibbs, LLN, SLLN, CLT, Bayesian inference, robotics estimation.</p>
+      </div>
+    </section>
+
+    <footer>
+      <p>© <span id="y"></span> Sai Sampath Kedari — Monte Carlo Statistical Methods</p>
+    </footer>
+  </main>
+  <script>document.getElementById("y").textContent = new Date().getFullYear();</script>
+</body>
+</html>
