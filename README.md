@@ -10,3 +10,10 @@ This repository will include step-by-step implementations and visualizations of 
 6. Applications to statistical estimation, learning, and robotics
 
 🚧 Work in progress, starting with fundamental sampling and convergence demos.
+---
+
+### 🎥 Example Visualization
+Animation of the random sampling from Beta Distribution
+<p align="center">
+  <img src="notebooks/images/Ch02_general_tranformations/beta_fill.gif" width="720"> 
+</p>
