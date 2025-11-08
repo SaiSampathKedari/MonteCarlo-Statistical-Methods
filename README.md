@@ -10,10 +10,17 @@ This repository will include step-by-step implementations and visualizations of 
 6. Applications to statistical estimation, learning, and robotics
 
 🚧 Work in progress, starting with fundamental sampling and convergence demos.
+
 ---
 
-### 🎥 Example Visualization
-Animation of the random sampling from Beta Distribution
+### 🎥 Example Visualizations
 <p align="center">
-  <img src="notebooks/images/Ch02_general_tranformations/beta_fill.gif" width="720"> 
+  <img src="notebooks/images/Ch02_general_tranformations/beta_fill.gif" width="48%">
+  &nbsp;&nbsp;&nbsp;
+  <img src="notebooks/animations/accept_reject_demo.gif" width="48%">
+</p>
+
+<p align="center">
+  <b>Left:</b> Inverse Transform Sampling (Beta Distribution) &nbsp; | &nbsp;
+  <b>Right:</b> Accept–Reject Sampling (Laplace → Normal)
 </p>
