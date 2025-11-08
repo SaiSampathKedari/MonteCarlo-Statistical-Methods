@@ -97,3 +97,13 @@ def sample_logistic(mu: float, beta: float, n: int) -> np.ndarray:
     U = np.random.rand(n)
     X = np.log(U/(1-U))
     return mu + beta * X
+
+def sample_laplace_standard(n: int) -> np.ndarray:
+    U = np.random.rand(n)
+    Z = np.where(U < 0.5, np.log(2.0 * U), -1*np.log(2.0 * (1.0 - U)))
+    return Z
+
+def sample_laplace(mu: float, sigma: float, n:int) -> np.ndarray:
+    assert sigma > 0, "sigma must be positive"
+    Z = sample_laplace_standard(n)
+    return mu + sigma * Z
