@@ -22,7 +22,34 @@ class ImportanceSamples:
     h_vals: np.ndarray              # Optional function evaluations h(X_i)
     estimate_is: np.ndarray         # 1/n * sum_i h(X_i) w_i  (unnormalized IS)
     estimate_snis: np.ndarray       # sum_i h(X_i) w_i / sum_i w_i (self-normalized IS)
-
+    
+    def ess(self) -> float:
+            """
+            Compute the Effective Sample Size (ESS) for importance sampling.
+            
+            ESS_raw = (sum w_i)^2 / sum w_i^2
+            ESS_norm = 1 / sum (w_i_norm)^2
+            
+            Both formulas are mathematically equivalent.
+            """
+            w = self.w_raw
+            if np.sum(w) == 0:
+                return 0.0
+            
+            # Raw ESS
+            ess_raw = (np.sum(w) ** 2) / np.sum(w ** 2)
+            return ess_raw
+    
+    def ess_normalized(self) -> float:
+        """
+        ESS computed from normalized weights.
+        
+        ESS_norm = 1 / sum( w_i_norm^2 )
+        """
+        w = self.w_norm
+        return 1.0 / np.sum(w ** 2)
+    
+        
 def importance_sampling(
     num_samples: int,
     proposal_sample_generator: Callable[[int], np.ndarray],
