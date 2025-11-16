@@ -30,9 +30,13 @@ This repository includes step-by-step implementations and visualizations of key 
 ### 📊 Importance Sampling & Self-Normalized IS
 
 <p align="center">
-  <img src="notebooks/images/ch03_importance_sampling/LaplacePrior_Gaussian_Likelihood.png" height="250">
+  <span style="display:inline-block; vertical-align:middle;">
+    <img src="notebooks/images/ch03_importance_sampling/LaplacePrior_Gaussian_Likelihood.png" height="250">
+  </span>
   &nbsp;&nbsp;&nbsp;
-  <img src="notebooks/images/ch03_importance_sampling/Prior_Likelihood_Posterior.png" height="250">
+  <span style="display:inline-block; vertical-align:middle;">
+    <img src="notebooks/images/ch03_importance_sampling/Prior_Likelihood_Posterior.png" height="250">
+  </span>
 </p>
 
 <p align="center">
