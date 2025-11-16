@@ -1,37 +1,40 @@
 # MonteCarlo-Statistical-Methods
 
-This repository will include step-by-step implementations and visualizations of key Monte Carlo techniques in the coming weeks, including:
+This repository includes step-by-step implementations and visualizations of key Monte Carlo techniques:
 
-1. Random variable generation (Inverse Transform, Accept–Reject, Importance Sampling)
-2. Monte Carlo estimation and convergence (WLLN, SLLN, CLT)
-3. Variance reduction methods (Control Variates, Antithetic Sampling, Multilevel Control Variates)
-4. Markov Chain Monte Carlo (MCMC) algorithms
-5. Bayesian inference and filtering basics
-6. Applications to statistical estimation, learning, and robotics
+1. Random variable generation (Inverse Transform, Accept–Reject, Importance Sampling)  
+2. Monte Carlo estimation and convergence (WLLN, SLLN, CLT)  
+3. Variance reduction methods (Control Variates, Antithetic Sampling, Multilevel Control Variates)  
+4. Markov Chain Monte Carlo (MCMC)  
+5. Bayesian inference and filtering basics  
+6. Applications to statistical estimation, learning, and robotics  
 
-🚧 Work in progress, starting with fundamental sampling and convergence demos.
+🚧 Work in progress — starting with fundamental sampling and convergence demos.
+
+---
+
+### 🎥 Sampling Visualizations
+
+<p align="center">
+  <img src="notebooks/images/Ch02_general_tranformations/beta_fill.gif" height="250">
+  &nbsp;&nbsp;&nbsp;
+  <img src="notebooks/animations/accept_reject_demo.gif" height="250">
+</p>
+
+<p align="center">
+  <i>Inverse Transform Sampling (Beta distribution) &nbsp; | &nbsp; Accept–Reject Sampling (Laplace → Normal)</i>
+</p>
 
 ---
 
-### 🎥 Example Visualizations
+### 📊 Importance Sampling & Self-Normalized IS
+
 <p align="center">
-  <img src="notebooks/images/Ch02_general_tranformations/beta_fill.gif" height="260">
+  <img src="notebooks/images/ch03_importance_sampling/LaplacePrior_Gaussian_Likelihood.png" height="250">
   &nbsp;&nbsp;&nbsp;
-  <img src="notebooks/animations/accept_reject_demo.gif" height="260">
+  <img src="notebooks/images/ch03_importance_sampling/Prior_Likelihood_Posterior.png" height="250">
 </p>
 
 <p align="center">
-  Inverse Transform Sampling (Beta Distribution) and Accept–Reject Sampling (Laplace → Normal)
-</p>
-
----
-### 📊 Importance Sampling & Self-Normalized Importance Sampling
-<p align="center">
-  <img src="notebooks/images/ch03_importance_sampling/LaplacePrior_Gaussian_Likelihood.png" height="260">
-  &nbsp;&nbsp;&nbsp;
-  <img src="notebooks/images/ch03_importance_sampling/Prior_Likelihood_Posterior.png" height="260">
-</p>
-
-<p align="center">
-  Visualizing the proposal distribution, likelihood weighting, and posterior formation in Importance Sampling and Self-Normalized Importance Sampling.
+  <i>Visualizing proposal–target overlap, likelihood weighting, and posterior formation in Importance Sampling and Self-Normalized Importance Sampling.</i>
 </p>
