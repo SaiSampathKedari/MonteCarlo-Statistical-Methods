@@ -37,3 +37,36 @@ This repository includes step-by-step implementations and visualizations of key 
 <p align="center"> 
   Visualizing the proposal distribution, likelihood weighting, and posterior formation in Importance Sampling and Self-Normalized Importance Sampling. 
 </p>
+
+---
+
+### 🎚️ Control Variates
+
+<p align="center">
+  <img src="notebooks/images/ch04_controlVariate/mc_vs_cv_var.png" height="240">
+  &nbsp;&nbsp;&nbsp;
+  <img src="notebooks/images/ch04_controlVariate/g_vs_h_plot.png" height="240">
+</p>
+
+<p align="center">
+  Comparing vanilla Monte Carlo estimates with Control Variates (left), and visualizing how the chosen control variate 
+  is strongly correlated with the target function (right). This correlation drives the variance reduction effect.
+</p>
+
+---
+
+
+### 🟦 Brownian Motion: From Random Walks to Continuous Paths
+
+<p align="center">
+  <img src="notebooks/images/ch04_controlVariate/DiffusiveScale.png" height="240">
+  &nbsp;&nbsp;&nbsp;
+  <img src="notebooks/images/ch04_controlVariate/multiple_BM.png" height="240">
+</p>
+
+<p align="center">
+  Constructing Brownian Motion from the diffusive scaling of simple random walks (left), and several Brownian 
+  sample paths with the characteristic square-root growth of spread over time (right).
+</p>
+
+---
