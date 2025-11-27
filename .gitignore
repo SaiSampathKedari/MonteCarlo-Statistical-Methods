@@ -17,7 +17,6 @@ build/
 dist/
 wheels/
 MANIFEST
-montecarlo_statistical_methods.egg-info/
 
 # ---------------------------------------------------------------------------
 # Virtual environments
@@ -31,10 +30,9 @@ ENV/
 # Jupyter Notebook
 # ---------------------------------------------------------------------------
 .ipynb_checkpoints/
-*.nbconvert.ipynb
 
 # ---------------------------------------------------------------------------
-# LaTeX build artifacts
+# LaTeX build artifacts (for your PDFs in reports/)
 # ---------------------------------------------------------------------------
 *.aux
 *.bbl
@@ -47,8 +45,6 @@ ENV/
 *.fls
 *.fdb_latexmk
 *.synctex.gz
-*.synctex.gz(busy)
-*.pdfsync
 
 # ---------------------------------------------------------------------------
 # IDE / Editor / OS files
@@ -69,10 +65,7 @@ Thumbs.db
 *.cover
 htmlcov/
 .tox/
-nosetests.xml
-coverage.xml
 pytest_cache/
-logs/
 *.log
 
 # ---------------------------------------------------------------------------

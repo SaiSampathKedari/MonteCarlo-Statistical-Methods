@@ -5,4 +5,12 @@ requires-python = ">=3.10"
 dependencies = ["numpy", "scipy", "matplotlib"]
 
 [tool.setuptools]
-packages = ["mc_core"]
+package-dir = {"" = "src"}
+packages = [
+    "sampling",
+    "utils",
+    "importance_sampling",
+    "variance_reduction",
+    "stochastic_processes",
+    "mcmc"
+]
