@@ -12,10 +12,31 @@ LogCondPDF = Callable[[np.ndarray, np.ndarray], np.ndarray] # log q(y|x)
 ProposalSampler = Callable[[np.ndarray], np.ndarray]  # sample y ~ q(· | x)
 
 @dataclass
-class MHSamples:
-    samples: np.ndarray      # shape (n, d) or (n,) for 1-D target
-    acceptance_rate: float   # overall acceptance rate in [0, 1]
+class MCMCResultBase:
+    """
+    Base container for MCMC output.
     
+    Attributes
+    ----------
+    samples : np.ndarray
+        Array of generated samples with shape (N, d).
+    accept_rate : float
+        Overall acceptance rate of the chain.
+    accept_mask : np.ndarray
+        Boolean mask of length N indicating accepted proposals.
+    """
+    samples: np.ndarray
+    accept_rate: float
+    accept_mask: np.ndarray
+
+
+@dataclass
+class MHResult(MCMCResultBase):
+    """
+    Result object for the Metropolis-Hastings algorithm.
+    Inherits the standard MCMC fields without modification.
+    """
+    pass
 
 
 def mh_acceptance_prob(
@@ -71,7 +92,7 @@ def mh_mcmc(
     num_samples: int,
     target_logpdf: LogPDF,
     proposal_logpdf: LogCondPDF,
-    proposal_sampler: ProposalSampler) -> MHSamples:
+    proposal_sampler: ProposalSampler) -> MHResult:
     """
     Run the Metropolis-Hastings MCMC algorithm to generate samples from a 
     target distribution defined by its log-density.
@@ -114,6 +135,9 @@ def mh_mcmc(
     # allocate array for samples: shape (num_samples, d)
     samples = np.zeros((num_samples, d))
     
+    # acceptance mask
+    acceptance_mask = np.zeros(num_samples, dtype=bool)
+    
     # store inital sample
     samples[0] = initial_sample
     
@@ -142,14 +166,17 @@ def mh_mcmc(
             # Accept the Proposed Sample
             samples[i] = proposed_sample
             acceptance_count += 1
+            acceptance_mask[i] = True
         else:
             # Reject and take current Sample
             samples[i] = current_sample
+            acceptance_mask[i] = False
         
         current_sample = samples[i]
     
     # 5) Return 
-    return MHSamples(
+    return MHResult(
             samples=samples,
-            acceptance_rate= acceptance_count/float(num_samples-1))
+            accept_rate= acceptance_count/float(num_samples-1),
+            accept_mask=acceptance_mask)
         
