@@ -34,7 +34,7 @@ This repository includes step-by-step implementations and visual explanations of
    WLLN, SLLN, CLT  
 3. **Variance reduction**  
    Control Variates, Multilevel CV  
-4. **Markov Chain Monte Carlo (MCMC)** *(coming next)*  
+4. **Markov Chain Monte Carlo (MCMC)**  
 5. **Bayesian inference & filtering basics**  
 6. **Stochastic processes**  
    Random Walks → Brownian Motion  
@@ -46,9 +46,9 @@ This repository includes step-by-step implementations and visual explanations of
 ## 🎥 Sampling Visualizations
 
 <p align="center">
-  <img src="notebooks/images/Ch02_general_tranformations/beta_fill.gif" height="240">
+  <img src="animations/beta_fill.gif" height="240">
   &nbsp;&nbsp;&nbsp;
-  <img src="notebooks/animations/accept_reject_demo.gif" height="240">
+  <img src="animations/accept_reject_demo.gif" height="240">
 </p>
 
 <p align="center"><i>Inverse Transform Sampling (Beta) &nbsp; | &nbsp; Accept–Reject Sampling (Laplace → Normal)</i></p>
@@ -58,9 +58,9 @@ This repository includes step-by-step implementations and visual explanations of
 ## 📊 Importance Sampling & Self-Normalized IS
 
 <p align="center"> 
-  <img src="notebooks/images/ch03_importance_sampling/LaplacePrior_Gaussian_Likelihood.png" height="250"> 
+  <img src="images/importance_sampling/LaplacePrior_Gaussian_Likelihood.png" height="250"> 
   &nbsp;&nbsp;&nbsp; 
-  <img src="notebooks/images/ch03_importance_sampling/Prior_Likelihood_Posterior.png" height="250"> 
+  <img src="images/importance_sampling/Prior_Likelihood_Posterior.png" height="250"> 
 </p> 
 
 <p align="center">
@@ -72,9 +72,9 @@ This repository includes step-by-step implementations and visual explanations of
 ## 🎚️ Control Variates
 
 <p align="center">
-  <img src="notebooks/images/ch04_controlVariate/mc_vs_cv_var.png" height="235">
+  <img src="images/variance_reduction/mc_vs_cv_var.png" height="235">
   &nbsp;&nbsp;&nbsp;
-  <img src="notebooks/images/ch04_controlVariate/g_vs_h_plot.png" height="235">
+  <img src="images/variance_reduction/g_vs_h_plot.png" height="235">
 </p>
 
 <p align="center">
@@ -86,9 +86,9 @@ This repository includes step-by-step implementations and visual explanations of
 ## 🟦 Brownian Motion: Random Walks → Continuous Paths
 
 <p align="center">
-  <img src="notebooks/images/ch04_controlVariate/DiffusiveScale.png" height="235">
+  <img src="images/stochastic_processes/DiffusiveScale.png" height="235">
   &nbsp;&nbsp;&nbsp;
-  <img src="notebooks/images/ch04_controlVariate/multiple_BM.png" height="235">
+  <img src="images/stochastic_processes/multiple_BM.png" height="235">
 </p>
 
 <p align="center">
@@ -100,22 +100,22 @@ This repository includes step-by-step implementations and visual explanations of
 # Notebook Gallery
 
 ### **Chapter 2 — Sampling**
-- [General Transformations (Beta / Gamma / Chi-Square)](notebooks/ch02_general_transforms.ipynb)  
-- [Accept–Reject Sampling](notebooks/ch02_accept_reject.ipynb)
+- [General Transformations (Beta / Gamma / Chi-Square)](notebooks/ch02_sampling/ch02_general_transforms.ipynb)  
+- [Accept–Reject Sampling](notebooks/ch02_sampling/ch02_accept_reject.ipynb)  
+- [Exponential RVs](notebooks/ch02_sampling/exponential.ipynb)  
+- [Gamma RVs](notebooks/ch02_sampling/gamma.ipynb)
 
 ### **Chapter 3 — Importance Sampling**
-- [Cauchy Tail Motivation](notebooks/ch03_01_ImportanceSampling_CauchyTail_Motivation.ipynb)  
-- [Rare Event Estimation](notebooks/ch03_03_ImportanceSampling_RareEvent_Estimation.ipynb)  
-- [Self-Normalized IS](notebooks/ch03_04_SelfNormalized_ImportanceSampling.ipynb)
+- [Cauchy Tail Motivation](notebooks/ch03_importance_sampling/ch03_01_ImportanceSampling_CauchyTail_Motivation.ipynb)  
+- [Rare Event Estimation](notebooks/ch03_importance_sampling/ch03_03_ImportanceSampling_RareEvent_Estimation.ipynb)  
+- [Self-Normalized IS](notebooks/ch03_importance_sampling/ch03_04_SelfNormalized_ImportanceSampling.ipynb)
 
 ### **Chapter 4 — Variance Reduction & Processes**
-- [Control Variate Example](notebooks/ch04_03_controlVariate_example1.ipynb)  
-- [Brownian Motion Simulation](notebooks/ch04_02_Brownian_Motion.ipynb)
+- [Control Variate Example](notebooks/ch04_variance_reduction/ch04_03_controlVariate_example1.ipynb)  
+- [Brownian Motion Simulation](notebooks/ch06_stochastic_processes/ch04_02_Brownian_Motion.ipynb)
 
-### **Upcoming**
-- Metropolis–Hastings  
-- Gibbs Sampling  
-- Hamiltonian Monte Carlo  
+### **Chapter 5 — MCMC**
+- [Metropolis–Hastings Example](notebooks/ch05_mcmc/ch05_08_metropolis_Hastings_MCMC_example1.ipynb)
 
 ---
 
@@ -132,6 +132,9 @@ Structured PDF write-ups:
 - `reports/ch04_01_ControlVariate_Foundations-and-Intution.pdf`  
 - `reports/ch04_02_Brownian_Motion.pdf`  
 - `reports/ch04_03_ControlVariate_example1.pdf`  
+- `reports/ch05_01_MarkovChain_Intro.pdf`  
+- `reports/ch05_02_Irreducibility.pdf`  
+- `reports/ch05_07_Metropolis-Hastings.pdf`
 
 ---
 
@@ -140,23 +143,34 @@ Structured PDF write-ups:
 ```text
 MonteCarlo-Statistical-Methods/
 │
-├── mc_core/
+├── animations/
+├── images/
+│   ├── sampling/
+│   ├── importance_sampling/
+│   ├── variance_reduction/
+│   ├── stochastic_processes/
+│   └── exponential/
 ├── notebooks/
-│   ├── animations/
-│   ├── images/
-│   ├── *.ipynb
+│   ├── ch02_sampling/
+│   ├── ch03_importance_sampling/
+│   ├── ch04_variance_reduction/
+│   ├── ch05_mcmc/
+│   └── ch06_stochastic_processes/
 ├── reports/
+├── src/
 ├── README.md
 ├── index.md
 └── pyproject.toml
-````
+```
 
 ---
 
 ## 👤 About Me
-Interested in robotics, optimization, control, Bayesian inference, and probabilistic reasoning.
 
-GitHub: https://github.com/SaiSampathKedari  
-LinkedIn: https://linkedin.com/in/sai-sampath-kedari  
-X: https://x.com/SSampathKedari  
-Email: sampath@umich.edu
+Interested in **robotics, optimization, control, Bayesian inference, and probabilistic reasoning**.
+
+- GitHub: https://github.com/SaiSampathKedari  
+- LinkedIn: https://linkedin.com/in/sai-sampath-kedari  
+- X: https://x.com/SSampathKedari  
+- Email: sampath@umich.edu
+
