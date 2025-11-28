@@ -146,6 +146,47 @@ def eval_normpdf_on_grid(x: np.ndarray, y: np.ndarray,
 
     return XX, YY, pdf_vals
 
+def eval_on_2D_grid(
+    x: np.ndarray,
+    y: np.ndarray,
+    func: Callable[[np.ndarray], float]
+):
+    """
+    Evaluate ANY 2D function func(x) over a grid defined by x and y.
+
+    Parameters
+    ----------
+    x : np.ndarray
+        1D grid values for x-axis, shape (Nx,).
+    y : np.ndarray
+        1D grid values for y-axis, shape (Ny,).
+    func : Callable
+        Function func(z) that returns a scalar for a 2-D input z of shape (2,).
+
+    Returns
+    -------
+    XX : np.ndarray
+        Grid of x coordinates, shape (Ny, Nx).
+    YY : np.ndarray
+        Grid of y coordinates, shape (Ny, Nx).
+    vals : np.ndarray
+        func evaluated at each grid point, shape (Ny, Nx).
+    """
+
+    # Build grid (Ny, Nx)
+    XX, YY = np.meshgrid(x, y)
+
+    # Flatten grid into (Ny*Nx, 2)
+    pts = np.column_stack((XX.ravel(), YY.ravel()))
+
+    # Evaluate function everywhere
+    vals_flat = np.array([func(pt) for pt in pts])
+
+    # Reshape back to (Ny, Nx)
+    vals = vals_flat.reshape(XX.shape)
+
+    return XX, YY, vals
+
 def univariate_normal_pdf(x: np.ndarray, mean: float, std: float) -> np.ndarray:
     """
     Compute univariate Gaussian PDF for vector x.
