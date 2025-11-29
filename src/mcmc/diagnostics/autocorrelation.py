@@ -140,7 +140,8 @@ def plot_autocorrelation_2d(
     acf_values: np.ndarray,
     dim_names: Tuple[str, str] = ("dimension 1", "dimension 2"),
     figsize: Tuple[int, int] = (12, 4),
-    marker: str = "o"
+    marker: str = "o",
+    save_path: Optional[str] = None
 ):
     """
     Visualize autocorrelation function (ACF) for a 2-dimensional chain.
@@ -182,13 +183,18 @@ def plot_autocorrelation_2d(
         ax.set_ylim(-0.1, 1.05)  # keep consistent scale
 
     plt.tight_layout()
+    
+    # Save if requested
+    if save_path is not None:
+        plt.savefig(save_path, dpi=300, bbox_inches="tight")
     plt.show()
     
 def plot_mixing_2d(
     samples: np.ndarray,
     dim_names: Tuple[str, str] = ("x1", "x2"),
     figsize: Tuple[int, int] = (12, 5),
-    color: str = "black"
+    color: str = "black",
+    save_path: Optional[str] = None
 ):
     """
     Plot the mixing (traceplot) of a 2-dimensional MCMC chain.
@@ -228,4 +234,9 @@ def plot_mixing_2d(
     axs[1].grid(True, linestyle="--", alpha=0.4)
 
     plt.tight_layout()
+    
+    # Save if requested
+    if save_path is not None:
+        plt.savefig(save_path, dpi=300, bbox_inches="tight")
+    
     plt.show()
