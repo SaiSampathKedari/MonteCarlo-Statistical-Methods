@@ -60,107 +60,98 @@ def dr_mcmc(
     target_logpdf: LogPDF,
     proposal_logpdf: LogCondPDF,
     proposal_sampler: ProposalSampler,
-    gamma: float = 0.5) -> DRResult:
+    gamma: float = 0.5,
+    verbose: bool=True) -> DRResult:
     
     """
     Delayed Rejection MCMC Algorithm
     """
     
-    # dimenstion of the state space
+    # dimenstion of the state
     d = initial_sample.shape[0]
     
-    # allocate array for samples: shape (num_samples, d)
+    # allocate space for all samples: shape (num_samples, d)
     samples = np.zeros((num_samples, d))
-    
-    # store initial sample
     samples[0] = initial_sample
     
-    # acceptance mask
+    # mask indicating which proposals were accepted
     acceptance_mask = np.zeros(num_samples, dtype=bool)
     
-    eps= 0.001
+    # initial proposal covariance (scaled random-walk form)
+    eps= 1e-3
     sd = 2.4**2/float(d)
     S0 = sd* initial_cov + sd* eps * np.eye(d)
     Sk = S0
     
-    current_sample = initial_sample
+    # current state x and log f(x)
+    x = initial_sample
+    log_f_x = target_logpdf(x)
+    
     acceptance_count = 0
-    for k in range(1, num_samples):
-        # 0) store current sample as x
-        x = current_sample
-        
-        # 1) Propose a sample y ~ q(.|x, Sk)
+    for k in range(1, num_samples):        
+        # 1)  Level 1 proposal: y1 ~ q(· | x)
         y1 = proposal_sampler(x, Sk)
         
-        # 2) compute log f(x) and log f(y)
-        log_f_x = target_logpdf(x)
+        # 2) compute log f(y1)
         log_f_y1 = target_logpdf(y1)
         
-        # 3) Compute acceptance probability a(x,y)
+        # 3) Compute acceptance probability a(x,y1)
         a1_x_y1 = mh_acceptance_prob(
-            log_f_x,
-            log_f_y1,
-            x,
-            y1,
-            proposal_logpdf,
-            Sk)
+            log_f_x, log_f_y1,
+            x, y1,
+            proposal_logpdf, Sk)
         
         # 4) Accept Proposed or go to level 2
         u = np.random.rand()
         if u < a1_x_y1:
             # Accept the Proposed Sample
             samples[k] = y1
+            
+            x = y1
+            log_f_x = log_f_y1
+            
             acceptance_count += 1
             acceptance_mask[k] = True
         else:
-            # 5) Level 2
+            # 5) Level 2 proposal: y2 ~ q2(· | x)
             y2 = proposal_sampler(x, gamma*Sk)
-            
             log_f_y2 = target_logpdf(y2)
-            # log_f_y1, already compute above
             
             # 6) compute a_1(y_2, y_1)
             a1_y2_y1 = mh_acceptance_prob(
-                log_f_y2,
-                log_f_y1,
-                y2,
-                y1,
-                proposal_logpdf,
-                Sk
-            )
-            a2_x_y1_y2 = DRA_l2_acceptance_prob(
-                log_f_y2,
-                log_f_x,
-                a1_y2_y1,
-                a1_x_y1,
-                x,
-                y1,
-                y2,
-                proposal_logpdf,
-                Sk,
-                gamma
-            )
+                log_f_y2, log_f_y1,
+                y2, y1,
+                proposal_logpdf, Sk)
             
-            # 7) Accept proposed y2 or Reject and take x
+            # 7) compute level-2 acceptance a2(x, y1, y2)
+            a2_x_y1_y2 = DRA_l2_acceptance_prob(
+                log_f_y2, log_f_x,
+                a1_y2_y1, a1_x_y1,
+                x, y1, y2,
+                proposal_logpdf, Sk, gamma )
+            
+            # 8) Accept proposed y2 or Reject and take x
             u2 = np.random.rand()
             if u2 < a2_x_y1_y2:
                 # Accept the Proposed sample y2
                 samples[k] = y2
+                
+                x = y2
+                log_f_x = log_f_y2
+                
                 acceptance_count += 1
                 acceptance_mask[k] = True
             else:
-                # Reject y2 and take x
-                samples[k] = current_sample
+                # remain at x
+                samples[k] = x
                 acceptance_mask[k] = False
         
-        current_sample = samples[k]
-        
-        if k % 1000 == 0:
-            print(f"Finished sample {k}, acceptance ratio = {acceptance_count / k}")
+        # progress indicator (optional)
+        if verbose and (k % 1000 == 0):
+            print(f"Finished sample {k}, acceptance ratio = {acceptance_count / k:.3f}")
         
     # Return
     return DRResult(
         samples=samples,
         accept_rate= acceptance_count/float(num_samples-1),
         accept_mask=acceptance_mask)
-            

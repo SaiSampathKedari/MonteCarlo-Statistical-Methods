@@ -39,7 +39,8 @@ def am_mcmc(
     eps= 1e-3
     sd = 2.4**2/float(d)
     S0 = sd* initial_cov + sd* eps * np.eye(d)
-    Sk = S0
+    Sk = S0.copy()         # always-updated covariance
+    Sk_used = Sk.copy()    # used for proposing (updated only at freq)
     
     # initial state
     x = initial_sample
@@ -51,14 +52,17 @@ def am_mcmc(
     acceptance_count = 0
     for k in range(1, num_samples):
         
-        #  0) If we reach adaptation point, compute initial S_k
+        #  0) If k == k0, compute initial covariance from the first k samples
         if k == k0:
             meanPrev = np.mean(samples[:k], axis=0)
             CkPrev = np.cov(samples[:k], rowvar=False)
             Sk = sd* CkPrev + sd * eps * np.eye(d)
             
+            # IMPORTANT: when hitting k0, Sk_used must be updated
+            Sk_used = Sk.copy()
+            
         #  1) Propose y ~ q(. | x, Sk)
-        y = proposal_sampler(x, Sk)
+        y = proposal_sampler(x, Sk_used)
         
         # 2) target logpdf at proposed point: log f(y)
         log_f_y = target_logpdf(y)
@@ -70,7 +74,7 @@ def am_mcmc(
             x,
             y,
             proposal_logpdf,
-            Sk)
+            Sk_used)
         
         # 4) Accept Proposed or Reject and take current 
         u = np.random.rand()
@@ -86,7 +90,7 @@ def am_mcmc(
             samples[k] = x
             acceptance_mask[k] = False
         
-        # 5) Adapt covariance S_k (Roberts-Rosenthal AM)
+        # 5)  Update covariance S_k recursively (Roberts–Rosenthal)
         if k >= k0:
             xk = samples[k]
             old_mean = meanPrev
@@ -102,6 +106,11 @@ def am_mcmc(
                     -(k+1)  *   np.outer(meanPrev, meanPrev) 
                     + np.outer(xk, xk)
                 )
+            
+            # Use new Sk only every freq_of_update iterations
+            if k % freq_of_update == 0:
+                Sk_used = Sk.copy()
+                
         # Optional progress printing
         if verbose and (k % 1000 == 0):
             print(f"Finished sample {k}, acceptance ratio = {acceptance_count / k:.3f}")
