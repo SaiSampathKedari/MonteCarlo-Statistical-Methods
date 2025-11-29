@@ -7,9 +7,9 @@ import scipy.stats as stats
 from utils.montecarlo import *
 
 
-LogPDF = Callable[[np.ndarray], np.ndarray] # log f(x)
-LogCondPDF = Callable[[np.ndarray, np.ndarray], np.ndarray] # log q(y|x) 
-ProposalSampler = Callable[[np.ndarray], np.ndarray]  # sample y ~ q(· | x)
+LogPDF = Callable[[np.ndarray], float] # log f(x)
+LogCondPDF = Callable[[np.ndarray, np.ndarray, np.ndarray], float] # log q(y|x) 
+ProposalSampler = Callable[[np.ndarray, np.ndarray], np.ndarray]  # sample y ~ q(· | x)
 
 @dataclass
 class MCMCResultBase:
@@ -44,7 +44,8 @@ def mh_acceptance_prob(
     proposed_target_logpdf_value : float,
     current_sample: np.ndarray,
     proposed_sample: np.ndarray,
-    proposal_logpdf_conditional: LogCondPDF) -> float:
+    proposal_logpdf_conditional: LogCondPDF,
+    proposal_sampler_cov: np.ndarray) -> float:
     """
     Compute the Metropolis-Hastings acceptance probability for a proposed move. 
     
@@ -61,7 +62,7 @@ def mh_acceptance_prob(
     proposed_sample: np.ndarray
         proposed state y (d,) of the markov chain
     proposal_logpdf_conditional:  Callable[[np.ndarray, np.ndarray], float]
-        A function that returns log q(y | x), the log-density of proposing
+        A function that returns log q(y | x, cov), the log-density of proposing
         `second` from `first`. Used to compute q(y|x) and q(x|y).
         
     Returns
@@ -72,12 +73,12 @@ def mh_acceptance_prob(
     """
     
     #1) Compute Forward Probability flow logf(x) - log q(y|x)
-    forward_prob_flow = current_target_logpdf_value - \
-        proposal_logpdf_conditional(current_sample, proposed_sample)
+    forward_prob_flow = current_target_logpdf_value + \
+        proposal_logpdf_conditional(proposed_sample, current_sample, proposal_sampler_cov)
         
     #2) Compute Reverse Probability flow logf(y) - log q(x|y)
-    reverse_prob_flow = proposed_target_logpdf_value - \
-        proposal_logpdf_conditional(proposed_sample, current_sample)
+    reverse_prob_flow = proposed_target_logpdf_value + \
+        proposal_logpdf_conditional(current_sample, proposed_sample, proposal_sampler_cov)
     # 3) log acceptance ratio
     log_acceptance_prob = reverse_prob_flow - forward_prob_flow
     
@@ -89,6 +90,7 @@ def mh_acceptance_prob(
 
 def mh_mcmc(
     initial_sample: np.ndarray,
+    initial_cov: np.ndarray,
     num_samples: int,
     target_logpdf: LogPDF,
     proposal_logpdf: LogCondPDF,
@@ -113,7 +115,7 @@ def mh_mcmc(
         Signature: proposal_logpdf(y: np.ndarray, x: np.ndarray) -> float.
     proposal_sampler : ProposalSampler
         Function that generates a proposed point y from the current point x,
-        i.e. y ~ q(· | x).
+        i.e. y ~ q(· | x, cov).
         Signature: proposal_sampler(x: np.ndarray) -> np.ndarray.
 
     Returns
@@ -135,17 +137,22 @@ def mh_mcmc(
     # allocate array for samples: shape (num_samples, d)
     samples = np.zeros((num_samples, d))
     
+    # store inital sample
+    samples[0] = initial_sample
+    
     # acceptance mask
     acceptance_mask = np.zeros(num_samples, dtype=bool)
     
-    # store inital sample
-    samples[0] = initial_sample
+    eps= 0.001
+    sd = 2.4**2/float(d)
+    S0 = sd* initial_cov + sd* eps * np.identity(d)
+    Sk = S0
     
     current_sample = initial_sample
     acceptance_count = 0
     for i in range(1, num_samples):
-        # 1) Propose a sample y ~ q(.|x)
-        proposed_sample = proposal_sampler(current_sample)
+        # 1) Propose a sample y ~ q(.|x, Sk)
+        proposed_sample = proposal_sampler(current_sample, Sk)
         
         # 2) compute log f(x) and log f(y)
         current_target_logpdf_value = target_logpdf(current_sample)
@@ -157,7 +164,8 @@ def mh_mcmc(
             proposed_target_logpdf_value,
             current_sample,
             proposed_sample,
-            proposal_logpdf)
+            proposal_logpdf,
+            Sk)
         
         # 4) Accept Proposed or Reject and take current 
         u = np.random.rand()
