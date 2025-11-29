@@ -145,7 +145,7 @@ def mh_mcmc(
     
     eps= 0.001
     sd = 2.4**2/float(d)
-    S0 = sd* initial_cov + sd* eps * np.identity(d)
+    S0 = sd* initial_cov + sd* eps * np.eye(d)
     Sk = S0
     
     current_sample = initial_sample
@@ -169,7 +169,6 @@ def mh_mcmc(
         
         # 4) Accept Proposed or Reject and take current 
         u = np.random.rand()
-        
         if u < acceptance_prob:
             # Accept the Proposed Sample
             samples[i] = proposed_sample

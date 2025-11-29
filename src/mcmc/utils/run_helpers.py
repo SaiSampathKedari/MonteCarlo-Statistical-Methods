@@ -33,3 +33,40 @@ def mcmc_burnin_and_thin(result, burnin_frac: float, thin_frac: float):
         accept_rate=new_rate,
         accept_mask=new_mask
     )
+    
+def proposal_mvn_sampler(x: np.ndarray, cov: np.ndarray = None)->np.ndarray:
+    """
+    Multivariate normal random-walk proposal:
+        y = x + L @ z
+    where z ~ N(0, I) and L is the Cholesky factor of cov.
+    """
+    if cov is None:
+        cov = np.identity(x.shape[0])
+    L = np.linalg.cholesky(cov) # cov = LL^T
+    z = np.random.randn(x.shape[0]) # standard normal vector
+    sample = x + np.matmul(L,z)
+    return sample
+
+def proposal_mvn_logpdf_eval(x: np.ndarray, mean: np.ndarray, cov: np.ndarray) -> np.ndarray:
+    """
+    x = point in d dimention # shape (d,)
+    mean = mean of the multivariate normal distribution # shape (d,)
+    cov = covariance of the multivariate normal distribution # shape (d,d)
+    
+    outpu = logpdf evauation of point x
+    """
+    d = x.shape[0]
+    
+    # log normalization constant:  -(d/2)*log(2π) - (1/2)*log|Σ|
+    log_preexp = -0.5 * (d * np.log(2 * np.pi) + np.log(np.linalg.det(cov)))
+    
+    # difference
+    diff = x - mean  # (d, 1)
+    
+    # Compute con^{-1}(x - mean)
+    sol = np.linalg.solve(cov, diff)     # (d, )
+    
+    inexp = -0.5*np.dot(diff, sol)
+    
+    # Final log-pdf 
+    return log_preexp + inexp
