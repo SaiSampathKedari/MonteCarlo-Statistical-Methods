@@ -22,70 +22,74 @@ def am_mcmc(
     proposal_logpdf: LogCondPDF,
     proposal_sampler: ProposalSampler,
     k0: int=50,
-    freq_of_update: int=100) -> AMResult:
+    freq_of_update: int=100,
+    verbose: bool=False) -> AMResult:
     
     # dimension of the state
     d = initial_sample.shape[0]
     
-    # Computing Covariance
-    eps= 0.001
+    # allocate array for samples: shape (num_samples, d)
+    samples = np.zeros((num_samples, d))
+    samples[0] = initial_sample
+    
+    # acceptance mask
+    acceptance_mask = np.zeros(num_samples, dtype=bool)
+    
+    # initial proposal covariance (scaled random walk)
+    eps= 1e-3
     sd = 2.4**2/float(d)
     S0 = sd* initial_cov + sd* eps * np.eye(d)
     Sk = S0
     
-    # allocate array for samples: shape (num_samples, d)
-    samples = np.zeros((num_samples, d))
-    samples[0] = initial_sample # store initial sample
-    
-    # acceptance mask: shape (num_samples, d)
-    acceptance_mask = np.zeros(num_samples, dtype=bool) 
+    # initial state
+    x = initial_sample
+    log_f_x = target_logpdf(x)
     
     # Previos storage
-    meanPrev = samples[0]
+    meanPrev = x.copy()
     
     acceptance_count = 0
-    current_sample = initial_sample
     for k in range(1, num_samples):
         
-        # Initial Covariance Compute
+        #  0) If we reach adaptation point, compute initial S_k
         if k == k0:
             meanPrev = np.mean(samples[:k], axis=0)
             CkPrev = np.cov(samples[:k], rowvar=False)
             Sk = sd* CkPrev + sd * eps * np.eye(d)
             
-        # 1) Propose a sample y ~ q(.|x, Sk)
-        proposed_sample = proposal_sampler(current_sample, Sk)
+        #  1) Propose y ~ q(. | x, Sk)
+        y = proposal_sampler(x, Sk)
         
-        # 2) compute log f(x) and log f(y)
-        current_target_logpdf_value = target_logpdf(current_sample)
-        proposed_target_logpdf_value = target_logpdf(proposed_sample)
+        # 2) target logpdf at proposed point: log f(y)
+        log_f_y = target_logpdf(y)
         
         # 3) Compute acceptance probability a(x,y)
-        acceptance_prob = mh_acceptance_prob(
-            current_target_logpdf_value,
-            proposed_target_logpdf_value,
-            current_sample,
-            proposed_sample,
+        a_x_y = mh_acceptance_prob(
+            log_f_x,
+            log_f_y,
+            x,
+            y,
             proposal_logpdf,
             Sk)
         
         # 4) Accept Proposed or Reject and take current 
         u = np.random.rand()
-        if u < acceptance_prob:
+        if u < a_x_y:
             # Accept the Proposed Sample
-            samples[k] = proposed_sample
-            acceptance_count += 1
+            samples[k] = y
+            x = y
+            log_f_x = log_f_y
             acceptance_mask[k] = True
+            acceptance_count += 1
         else:
             # Reject and take current Sample
-            samples[k] = current_sample
+            samples[k] = x
             acceptance_mask[k] = False
         
-        current_sample = samples[k]
-        # 5) update Covariance and mean
+        # 5) Adapt covariance S_k (Roberts-Rosenthal AM)
         if k >= k0:
             xk = samples[k]
-            meanPrev_old = meanPrev
+            old_mean = meanPrev
             
             # update mean
             meanPrev = (xk + k*meanPrev)/float(k+1)
@@ -94,11 +98,14 @@ def am_mcmc(
             Sk = ((k-1)/float(k)) * Sk \
                 + (sd/float(k)) *(
                     eps * np.eye(d) 
-                    + k     *   np.outer(meanPrev_old, meanPrev_old)
+                    + k     *   np.outer(old_mean, old_mean)
                     -(k+1)  *   np.outer(meanPrev, meanPrev) 
                     + np.outer(xk, xk)
                 )
-    
+        # Optional progress printing
+        if verbose and (k % 1000 == 0):
+            print(f"Finished sample {k}, acceptance ratio = {acceptance_count / k:.3f}")
+        
     # 6) Return 
     return AMResult(
         samples=samples,
