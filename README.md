@@ -6,8 +6,9 @@
 ![Stars](https://img.shields.io/github/stars/SaiSampathKedari/MonteCarlo-Statistical-Methods?style=social)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
-A visual, implementation-focused companion to *Monte Carlo Statistical Methods* (Robert & Casella), built through
-clear simulations, clean visualizations, and practical notebooks designed to teach Monte Carlo ideas the way they are actually used.
+A visual and practical guide to Monte Carlo techniques, focused on understanding rather than memorizing.  
+Each method is implemented from scratch and explored through intuitive diagrams, animations, and diagnostic tools.  
+These foundations support real applications in robotics, dynamics, and reinforcement learning, from Bayesian filters to sampling-based planning and uncertainty-aware control.
 
 ---
 
