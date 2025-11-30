@@ -96,7 +96,7 @@ The repository implements four MCMC algorithms on both **2D Gaussian** and **ban
 - Delayed Rejection (DR)  
 - Delayed Rejection Adaptive Metropolis (DRAM)  
 
-All diagnostics—burn-in, mixing, autocorrelation, integrated autocorrelation, and ESS—are derived in the
+All diagnostics: burn-in, mixing, autocorrelation, integrated autocorrelation, and ESS, are derived in the
 MH diagnostics notebook and reused across the remaining algorithms.
 
 Below is a DRAM example on the banana-shaped target.
@@ -125,24 +125,24 @@ Below is a DRAM example on the banana-shaped target.
 
 # Notebook Gallery
 
-### Chapter 2 — Sampling
+### Chapter 2: Sampling
 - [General Transformations](notebooks/ch02_sampling/ch02_general_transforms.ipynb)  
 - [Accept–Reject Sampling](notebooks/ch02_sampling/ch02_accept_reject.ipynb)  
 - [Exponential RVs](notebooks/ch02_sampling/exponential.ipynb)  
 - [Gamma RVs](notebooks/ch02_sampling/gamma.ipynb)
 
-### Chapter 3 — Importance Sampling
+### Chapter 3: Importance Sampling
 - [Cauchy Tail Motivation](notebooks/ch03_importance_sampling/ch03_01_ImportanceSampling_CauchyTail_Motivation.ipynb)  
 - [Rare Event Estimation](notebooks/ch03_importance_sampling/ch03_03_ImportanceSampling_RareEvent_Estimation.ipynb)  
 - [Self-Normalized IS](notebooks/ch03_importance_sampling/ch03_04_SelfNormalized_ImportanceSampling.ipynb)
 
-### Chapter 4 — Variance Reduction
+### Chapter 4: Variance Reduction
 - [Control Variate Example](notebooks/ch04_variance_reduction/ch04_03_controlVariate_example1.ipynb)
 
-### Chapter 6 — Stochastic Processes
+### Chapter 6: Stochastic Processes
 - [Brownian Motion](notebooks/ch06_stochastic_processes/ch04_02_Brownian_Motion.ipynb)
 
-### Chapter 5 — MCMC
+### Chapter 5: MCMC
 - [MH Diagnostics](notebooks/ch05_mcmc/ch05_01_MH_Diagnostics.ipynb)  
 - [Adaptive Metropolis — Gaussian](notebooks/ch05_mcmc/ch05_02_AdaptiveMetropolis_Gaussian.ipynb)  
 - [Adaptive Metropolis — Banana](notebooks/ch05_mcmc/ch05_03_AdaptiveMetropolis_Banana.ipynb)  
