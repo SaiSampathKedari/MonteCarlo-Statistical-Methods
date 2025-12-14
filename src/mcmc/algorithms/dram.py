@@ -41,7 +41,7 @@ def dram_mcmc(
     acceptance_mask = np.zeros(num_samples, dtype=bool)
     
     # initial proposal covariance (scaled random walk)
-    eps= 1e-3
+    eps= 1e-7
     sd = 2.4**2/float(d)
     S0 = sd* initial_cov + sd* eps * np.eye(d)
     Sk = S0.copy()         # always-updated covariance
