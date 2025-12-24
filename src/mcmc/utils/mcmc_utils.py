@@ -296,7 +296,8 @@ def scatter_matrix_clean(
     nbins=50,
     hist_plot=True,
     gamma=0.35,
-    figsize=(11, 11)
+    figsize=(11, 11),
+    suptitle = "Posterior Samples (Metropolis-Hastings MCMC)"
 ):
     """
     Clean & professional version of your professor's scatter_matrix.
@@ -332,7 +333,7 @@ def scatter_matrix_clean(
     axs = np.empty((dim, dim), dtype=object)
 
     fig.suptitle(
-        "Posterior Samples (Metropolis–Hastings MCMC)",
+        suptitle,
         fontsize=22,
         fontweight="bold",
         y=0.94
