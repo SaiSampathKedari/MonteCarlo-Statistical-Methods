@@ -4,6 +4,7 @@ from typing import Callable, Dict, Tuple, Optional, Union
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation, PillowWriter, FFMpegWriter
 from matplotlib.colors import to_rgba
+from matplotlib.patches import Rectangle
 
 import os
 import numpy as np
@@ -546,4 +547,389 @@ def animate_accept_reject_scatter(
         raise ValueError("kind must be 'gif' or 'mp4'.")
 
     plt.close(fig)
+    return out_path
+
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation, FFMpegWriter
+from matplotlib.gridspec import GridSpec
+from matplotlib.patches import FancyBboxPatch, Rectangle, FancyArrowPatch
+import os
+
+
+def animate_accept_reject_professional(
+    evlog,
+    target_rv,
+    proposal_rv, 
+    M: float,
+    out_path: str = "animations/accept_reject.mp4",
+    title: str = "Accept-Reject Sampling",
+    xlim: tuple = (-6, 6),
+    ylim: tuple = (0, 0.8),
+    frames: int = 400,
+    fps: int = 30,
+    figsize=(15, 8.5),
+) -> str:
+    """
+    EXCEPTIONAL Accept-Reject animation for personal website.
+    
+    Design philosophy:
+    - Warm, sophisticated color palette
+    - Rich, vibrant colors that pop
+    - Modern, clean layout
+    - Clear visual hierarchy
+    - Professional typography
+    - Meaningful statistics only
+    
+    Parameters
+    ----------
+    evlog : AcceptRejectEventLog
+        Event log from accept_reject_sampling
+    target_rv : scipy.stats distribution
+        Target distribution
+    proposal_rv : scipy.stats distribution
+        Proposal distribution
+    M : float
+        Envelope constant
+    out_path : str
+        Output file path
+    title : str
+        Animation title
+    xlim, ylim : tuple
+        Plot limits
+    frames : int
+        Number of animation frames
+    fps : int
+        Frames per second
+    figsize : tuple
+        Figure size
+    
+    Returns
+    -------
+    str
+        Path to saved animation
+    """
+    
+    n_total = evlog.num_proposals()
+    n_accepted = np.sum(evlog.accepted_mask)
+    n_rejected = n_total - n_accepted
+    
+    # ==================== SOPHISTICATED COLOR PALETTE ====================
+    # Warm, professional background - NOT WHITE!
+    COLOR_BG = '#FFF8F0'              # Warm cream/ivory - sophisticated!
+    COLOR_PLOT_BG = '#FFFCF7'         # Very light warm white
+    
+    # Rich, vibrant colors that POP against cream
+    COLOR_TARGET = '#0F4C81'          # Deep ocean blue
+    COLOR_ENVELOPE = '#8B2C5B'        # Deep burgundy/wine
+    COLOR_ACCEPTED = '#00695C'        # Deep teal/emerald
+    COLOR_REJECTED = '#D84315'        # Deep orange-red (VERY visible!)
+    
+    # Supporting colors
+    COLOR_TEXT = '#1A1A1A'            # Almost black
+    COLOR_ACCENT = '#F57C00'          # Vibrant orange
+    COLOR_GRID = '#D4C5B9'            # Warm gray
+    COLOR_SHADOW = '#E8DDD0'          # Subtle shadow
+    
+    # ==================== FIGURE SETUP ====================
+    fig = plt.figure(figsize=figsize, facecolor=COLOR_BG)
+    
+    # Title - larger, more prominent
+    fig.suptitle(title, fontsize=20, fontweight='bold', y=0.97, 
+                color=COLOR_TEXT, family='sans-serif')
+    
+    # Tighter layout for modern look
+    fig.subplots_adjust(left=0.06, right=0.97, top=0.92, bottom=0.08,
+                       hspace=0.25, wspace=0.35)
+    
+    # Layout: Main plot larger, stats panel more compact
+    gs = GridSpec(1, 4, figure=fig, width_ratios=[3.5, 0.05, 1, 0.05])
+    
+    ax_main = fig.add_subplot(gs[0, 0])     # Main plot (wider!)
+    ax_stats = fig.add_subplot(gs[0, 2])    # Statistics panel
+    
+    # ==================== MAIN PLOT ====================
+    ax_main.set_facecolor(COLOR_PLOT_BG)
+    
+    # Evaluate PDFs on grid
+    x_grid = np.linspace(xlim[0], xlim[1], 600)
+    f_grid = target_rv.pdf(x_grid)
+    g_grid = proposal_rv.pdf(x_grid)
+    Mg_grid = M * g_grid
+    
+    # ========== FILL REGIONS (GEOMETRIC INTUITION) ==========
+    
+    # Rejection region (between f and Mg) - subtle fill
+    ax_main.fill_between(x_grid, f_grid, Mg_grid, 
+                        color=COLOR_REJECTED, alpha=0.08, zorder=1,
+                        label='Rejection Region')
+    
+    # Target region (under f) - deeper fill
+    ax_main.fill_between(x_grid, 0, f_grid, 
+                        color=COLOR_TARGET, alpha=0.12, zorder=2,
+                        label='Acceptance Region')
+    
+    # ========== CURVES ==========
+    
+    # Envelope curve - thick, prominent
+    line_envelope = ax_main.plot(x_grid, Mg_grid, 
+                                color=COLOR_ENVELOPE, lw=4,
+                                label=f'$M \\cdot g(x)$ (Envelope)', 
+                                zorder=6, alpha=0.95, 
+                                solid_capstyle='round')[0]
+    
+    # Target curve - thickest, most prominent
+    line_target = ax_main.plot(x_grid, f_grid, 
+                              color=COLOR_TARGET, lw=4.5,
+                              label='$f(x)$ (Target)', 
+                              zorder=7, alpha=1.0,
+                              solid_capstyle='round')[0]
+    
+    # ========== SAMPLE POINTS ==========
+    
+    # Rejected samples - VERY visible now!
+    scatter_rejected = ax_main.scatter([], [], 
+                                      s=55,           # Large
+                                      c=COLOR_REJECTED,
+                                      alpha=0.75,     # Very visible!
+                                      marker='x',     
+                                      linewidths=2.5, # Thick X
+                                      zorder=4,
+                                      label='Rejected')
+    
+    # Accepted samples - clear circles
+    scatter_accepted = ax_main.scatter([], [], 
+                                      s=45, 
+                                      c=COLOR_ACCEPTED,
+                                      alpha=0.80,
+                                      edgecolors='white',
+                                      linewidths=1.0, 
+                                      zorder=5,
+                                      label='Accepted')
+    
+    # ========== STYLING ==========
+    
+    ax_main.set_xlim(xlim)
+    ax_main.set_ylim(ylim)
+    ax_main.set_xlabel('$x$', fontsize=18, fontweight='bold', 
+                      color=COLOR_TEXT, family='sans-serif')
+    ax_main.set_ylabel('Density', fontsize=18, fontweight='bold', 
+                      color=COLOR_TEXT, family='sans-serif')
+    ax_main.tick_params(labelsize=13, colors=COLOR_TEXT, width=1.5, length=6)
+    
+    # Sophisticated grid
+    ax_main.grid(True, alpha=0.3, linewidth=1.0, color=COLOR_GRID, 
+                linestyle='--', zorder=0)
+    ax_main.set_axisbelow(True)
+    
+    # Clean, modern spines
+    for spine in ['top', 'right']:
+        ax_main.spines[spine].set_visible(False)
+    for spine in ['left', 'bottom']:
+        ax_main.spines[spine].set_color(COLOR_GRID)
+        ax_main.spines[spine].set_linewidth(2)
+    
+    # Legend - modern style
+    legend = ax_main.legend(loc='upper right', fontsize=12, 
+                           frameon=True, fancybox=True, 
+                           shadow=False, framealpha=0.98,
+                           edgecolor=COLOR_GRID, facecolor=COLOR_PLOT_BG,
+                           borderpad=1, labelspacing=0.8)
+    legend.get_frame().set_linewidth(2)
+    
+    # ==================== STATISTICS PANEL ====================
+    ax_stats.axis('off')
+    ax_stats.set_xlim(0, 1)
+    ax_stats.set_ylim(0, 1)
+    
+    # Modern card-style background with shadow
+    shadow = Rectangle((0.06, 0.02), 0.88, 0.94,
+                      facecolor=COLOR_SHADOW, transform=ax_stats.transAxes,
+                      zorder=0)
+    ax_stats.add_patch(shadow)
+    
+    panel_bg = FancyBboxPatch((0.04, 0.04), 0.92, 0.92,
+                             boxstyle="round,pad=0.03",
+                             facecolor=COLOR_PLOT_BG, 
+                             edgecolor=COLOR_GRID,
+                             linewidth=2.5, 
+                             transform=ax_stats.transAxes,
+                             zorder=1)
+    ax_stats.add_patch(panel_bg)
+    
+    # ========== PANEL TITLE ==========
+    ax_stats.text(0.5, 0.94, 'Statistics', ha='center', va='top',
+                 fontsize=18, fontweight='bold', color=COLOR_TEXT,
+                 transform=ax_stats.transAxes, family='sans-serif')
+    
+    # Elegant divider
+    ax_stats.plot([0.15, 0.85], [0.88, 0.88], color=COLOR_GRID, 
+                 lw=2.5, transform=ax_stats.transAxes, 
+                 solid_capstyle='round')
+    
+    # ========== SECTION 1: SAMPLES ==========
+    ax_stats.text(0.5, 0.82, 'Samples', ha='center', va='top',
+                 fontsize=13, color=COLOR_TEXT, fontweight='600',
+                 style='italic', transform=ax_stats.transAxes)
+    
+    text_total = ax_stats.text(0.5, 0.75, '', ha='center', va='top',
+                              fontsize=12, color=COLOR_TEXT, 
+                              transform=ax_stats.transAxes)
+    
+    text_accepted = ax_stats.text(0.5, 0.68, '', ha='center', va='top',
+                                 fontsize=12, color=COLOR_ACCEPTED,
+                                 fontweight='bold', transform=ax_stats.transAxes)
+    
+    text_rejected = ax_stats.text(0.5, 0.61, '', ha='center', va='top',
+                                 fontsize=12, color=COLOR_REJECTED,
+                                 fontweight='bold', transform=ax_stats.transAxes)
+    
+    # Divider
+    ax_stats.plot([0.15, 0.85], [0.55, 0.55], color=COLOR_GRID, 
+                 lw=2, transform=ax_stats.transAxes)
+    
+    # ========== SECTION 2: ENVELOPE CONSTANT ==========
+    ax_stats.text(0.5, 0.49, 'Envelope Constant', ha='center', va='top',
+                 fontsize=13, color=COLOR_TEXT, fontweight='600',
+                 style='italic', transform=ax_stats.transAxes)
+    
+    ax_stats.text(0.5, 0.41, f'M = {M:.4f}', ha='center', va='top',
+                 fontsize=17, color=COLOR_ENVELOPE, fontweight='bold',
+                 transform=ax_stats.transAxes, family='monospace')
+    
+    # Divider
+    ax_stats.plot([0.15, 0.85], [0.35, 0.35], color=COLOR_GRID, 
+                 lw=2, transform=ax_stats.transAxes)
+    
+    # ========== SECTION 3: ACCEPTANCE RATES ==========
+    ax_stats.text(0.5, 0.29, 'Acceptance Rate', ha='center', va='top',
+                 fontsize=13, color=COLOR_TEXT, fontweight='600',
+                 style='italic', transform=ax_stats.transAxes)
+    
+    # Theoretical (from M)
+    text_theoretical = ax_stats.text(0.5, 0.22, '', ha='center', va='top',
+                                    fontsize=11, color=COLOR_TEXT,
+                                    transform=ax_stats.transAxes)
+    
+    # Empirical (from data)
+    text_empirical = ax_stats.text(0.5, 0.15, '', ha='center', va='top',
+                                  fontsize=12, color=COLOR_ACCENT,
+                                  fontweight='bold', transform=ax_stats.transAxes)
+    
+    # Match quality indicator
+    text_match = ax_stats.text(0.5, 0.08, '', ha='center', va='top',
+                              fontsize=10, color=COLOR_ACCEPTED,
+                              fontweight='600', style='italic',
+                              transform=ax_stats.transAxes)
+    
+    # ==================== FRAME MAPPING ====================
+    # Logarithmic progression for better storytelling
+    frame_indices = np.unique(np.logspace(0, np.log10(n_total), frames, dtype=int))
+    frame_indices = np.clip(frame_indices, 1, n_total)
+    frames = len(frame_indices)
+    
+    # ==================== ANIMATION UPDATE ====================
+    def update(frame_idx):
+        current_n = frame_indices[frame_idx]
+        
+        # Current data
+        x_current = evlog.x_all[:current_n]
+        u_current = evlog.u_all[:current_n]
+        mask_current = evlog.accepted_mask[:current_n]
+        
+        # Separate accepted/rejected
+        x_acc = x_current[mask_current]
+        u_acc = u_current[mask_current]
+        x_rej = x_current[~mask_current]
+        u_rej = u_current[~mask_current]
+        
+        n_acc = len(x_acc)
+        n_rej = len(x_rej)
+        
+        # Update scatter plots
+        if n_acc > 0:
+            scatter_accepted.set_offsets(np.column_stack([x_acc, u_acc]))
+        else:
+            scatter_accepted.set_offsets(np.empty((0, 2)))
+        
+        if n_rej > 0:
+            scatter_rejected.set_offsets(np.column_stack([x_rej, u_rej]))
+        else:
+            scatter_rejected.set_offsets(np.empty((0, 2)))
+        
+        # ========== UPDATE STATISTICS ==========
+        
+        # Sample counts
+        text_total.set_text(f'Total: {current_n:,}')
+        text_accepted.set_text(f'✓ Accepted: {n_acc:,}')
+        text_rejected.set_text(f'✗ Rejected: {n_rej:,}')
+        
+        # Rates
+        empirical_rate = n_acc / current_n if current_n > 0 else 0
+        theoretical_rate = 1 / M
+        
+        text_theoretical.set_text(
+            f'Theoretical: {theoretical_rate:.2%}\n(= 1/M)'
+        )
+        text_empirical.set_text(f'Empirical: {empirical_rate:.2%}')
+        
+        # Match indicator
+        if current_n > 20:
+            difference = abs(empirical_rate - theoretical_rate)
+            if difference < 0.01:
+                text_match.set_text('✓ Excellent match!')
+                text_match.set_color(COLOR_ACCEPTED)
+            elif difference < 0.03:
+                text_match.set_text('~ Converging well')
+                text_match.set_color(COLOR_ACCENT)
+            else:
+                text_match.set_text('⋯ Still converging...')
+                text_match.set_color(COLOR_TEXT)
+        else:
+            text_match.set_text('')
+        
+        return (scatter_accepted, scatter_rejected, text_total, 
+                text_accepted, text_rejected, text_theoretical, 
+                text_empirical, text_match)
+    
+    # ==================== BUILD ANIMATION ====================
+    print(f"Creating exceptional Accept-Reject animation with {frames} frames...")
+    anim = FuncAnimation(fig, update, frames=frames, interval=1000/fps,
+                        blit=False, repeat=False)
+    
+    # ==================== SAVE ====================
+    out_dir = os.path.dirname(out_path)
+    if out_dir:
+        os.makedirs(out_dir, exist_ok=True)
+    
+    print("Saving animation...")
+    
+    writer = FFMpegWriter(
+        fps=fps,
+        bitrate=3500,
+        codec='libx264',
+        extra_args=[
+            '-pix_fmt', 'yuv420p',
+            '-profile:v', 'baseline',
+            '-level', '3.0',
+            '-movflags', '+faststart'
+        ]
+    )
+    
+    try:
+        anim.save(out_path, writer=writer, dpi=120)
+    except Exception as e:
+        print(f"Warning: Save failed ({e}), trying fallback...")
+        writer = FFMpegWriter(fps=fps, bitrate=2500, codec='libx264')
+        anim.save(out_path, writer=writer, dpi=100)
+    
+    plt.close(fig)
+    
+    print(f"✓ Exceptional animation saved to: {out_path}")
+    print(f"  Design: Warm cream background, rich colors")
+    print(f"  Duration: {frames/fps:.1f} seconds")
+    print(f"  Stats: {n_accepted}/{n_total} accepted ({n_accepted/n_total:.1%})")
+    print(f"  Theory: {1/M:.1%} (1/M)")
+    print(f"\n🎯 Ready for your personal website!")
+    
     return out_path
