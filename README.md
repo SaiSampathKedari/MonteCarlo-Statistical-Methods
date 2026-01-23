@@ -1,4 +1,4 @@
-# MonteCarlo-Statistical-Methods
+# Monte Carlo Statistical Methods
 
 ![Python](https://img.shields.io/badge/python-3.10-blue.svg)
 ![Jupyter](https://img.shields.io/badge/Jupyter-Notebooks-orange.svg)
@@ -6,170 +6,186 @@
 ![Stars](https://img.shields.io/github/stars/SaiSampathKedari/MonteCarlo-Statistical-Methods?style=social)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 
-A visual and practical guide to Monte Carlo techniques, focused on understanding rather than memorizing.  
-Each method is implemented from scratch and explored through intuitive diagrams, animations, and diagnostic tools.  
-These foundations support real applications in robotics, dynamics, and reinforcement learning, from Bayesian filters to sampling-based planning and uncertainty-aware control.
+A complete reconstruction of the **Monte Carlo Statistical Methods** framework, implemented from scratch with clean visualizations, diagnostics, and mathematical writeups.  
+This repository builds intuition for the numerical engines behind **Bayesian inference, probabilistic robotics, and reinforcement learning**: sampling, importance sampling, variance reduction, Brownian motion, and advanced MCMC (MH, AM, DR, DRAM).
+
+Everything is designed for clarity and insight, from foundational sampling methods to high-dimensional MCMC behavior on nonlinear targets.
 
 ---
 
-# Table of Contents
-- [Overview](#overview)
-- [Sampling Visualizations](#sampling-visualizations)
-- [Importance Sampling](#importance-sampling)
-- [Control Variates](#control-variates)
-- [Brownian Motion](#brownian-motion)
-- [Markov Chain Monte Carlo](#markov-chain-monte-carlo)
-- [Notebook Gallery](#notebook-gallery)
-- [PDF Chapter Library](#pdf-chapter-library)
-- [Project Structure](#project-structure)
-- [About Me](#about-me)
+# DRAM on a Banana Distribution
+
+<p align="center">
+  <img src="animations/dram_banana.gif" width="95%" style="max-width: 900px;" />
+</p>
+
+**Delayed Rejection Adaptive Metropolis sampling a nonlinear banana-shaped target.**  
+This illustrates two-stage proposals, covariance adaptation, and real mixing behavior on warped geometries that appear in Bayesian robotics and RL when posterior surfaces are highly nonlinear.
 
 ---
 
 # Overview
 
-This repository builds Monte Carlo ideas from first principles using:
+This repository develops Monte Carlo techniques from first principles with a focus on:
 
-- **Random variable generation:** inverse transform, accept–reject, importance sampling  
-- **Monte Carlo estimation:** WLLN, SLLN, CLT  
-- **Variance reduction:** control variates, Brownian motion scaling  
-- **Markov Chain Monte Carlo:** MH, AM, DR, DRAM  
-- **Full diagnostics:** burn-in, mixing, autocorrelation, integrated autocorrelation, ESS  
+### **Sampling**
+- Inverse Transform  
+- Accept–Reject  
+- Exponential, Gamma, Logistic, Laplace sampling  
 
-Each topic is supported by **clean visualizations** and **self-contained Jupyter notebooks**.
+### **Monte Carlo Estimation**
+- WLLN, SLLN, CLT  
+- Empirical versus theoretical convergence  
+
+### **Importance Sampling**
+- Weight behavior  
+- Tail mismatch  
+- Rare-event estimation  
+- Self-normalized IS  
+
+### **Variance Reduction**
+- Control variates  
+- Brownian motion scaling  
+
+### **Markov Chain Monte Carlo**
+- Metropolis–Hastings  
+- Adaptive Metropolis  
+- Delayed Rejection  
+- Delayed Rejection Adaptive Metropolis (DRAM)
+
+### **Diagnostics**
+- Burn-in  
+- Autocorrelation  
+- Integrated autocorrelation time  
+- Effective sample size (ESS)  
+- Mixing behavior  
+
+Each method includes animations, intuitive diagrams, code, and full mathematical analysis.
 
 ---
 
 # Sampling Visualizations
 
+### **Inverse Transform Sampling for Beta Distribution**
+Transforms uniform draws \(U \sim \text{Unif}(0,1)\) through the inverse CDF \(F^{-1}(U)\) to generate exact Beta(10,3) samples.
+
 <p align="center">
-  <img src="animations/beta_fill.gif" height="230">
-  &nbsp;&nbsp;&nbsp;
-  <img src="animations/accept_reject_demo.gif" height="230">
+  <img src="animations/beta_fill.gif" style="max-width: 900px;"  />
 </p>
 
-<p align="center"><i>Inverse Transform sampling (left) and Accept–Reject sampling (right).</i></p>
+---
+
+### **Accept–Reject Sampling (Gaussian Target, Laplace Proposal)**
+Illustrates proposal mismatch, acceptance behavior, and envelope geometry.
+
+<p align="center">
+  <img src="animations/accept_reject_demo.gif" style="max-width: 900px;"  />
+</p>
 
 ---
 
 # Importance Sampling
 
-<p align="center"> 
-  <img src="images/importance_sampling/LaplacePrior_Gaussian_Likelihood.png" height="240"> 
-  &nbsp;&nbsp;&nbsp; 
-  <img src="images/importance_sampling/Prior_Likelihood_Posterior.png" height="240"> 
-</p>
+<div style="display: flex; justify-content: space-between; width: 100%;">
+  <img src="images/importance_sampling/LaplacePrior_Gaussian_Likelihood.png" style="width: 49%;">
+  <img src="images/importance_sampling/Prior_Likelihood_Posterior.png" style="width: 49%;">
+</div>
 
-<p align="center"><i>Proposal vs likelihood alignment and resulting posterior for Importance Sampling.</i></p>
+Importance sampling is developed from basic motivation to full diagnostics, including weight stability, heavy-tail mismatch, and rare-event estimation.
 
 ---
 
 # Control Variates
 
-<p align="center">
-  <img src="images/variance_reduction/mc_vs_cv_var.png" height="230">
-  &nbsp;&nbsp;&nbsp;
-  <img src="images/variance_reduction/g_vs_h_plot.png" height="230">
-</p>
+<div align="center">
+  <img src="images/variance_reduction/mc_vs_cv_var.png" width="49%">
+  <img src="images/variance_reduction/g_vs_h_plot.png" width="49%">
+</div>
 
-<p align="center"><i>Variance comparison (left) and correlation structure enabling control variates (right).</i></p>
+Demonstrates how correlation structure can significantly reduce estimator variance.
 
 ---
 
 # Brownian Motion
 
-<p align="center">
-  <img src="images/stochastic_processes/DiffusiveScale.png" height="230">
-  &nbsp;&nbsp;&nbsp;
-  <img src="images/stochastic_processes/multiple_BM.png" height="230">
-</p>
+<div align="center">
+  <img src="images/stochastic_processes/DiffusiveScale.png" width="49%">
+  <img src="images/stochastic_processes/multiple_BM.png" width="49%">
+</div>
 
-<p align="center"><i>Random-walk scaling to Brownian motion and simulated sample paths.</i></p>
+From the scaling limit of random walks to full Brownian-motion sample paths.
 
 ---
 
-# Markov Chain Monte Carlo
+# MCMC Gallery
 
-The repository implements four MCMC algorithms on both **2D Gaussian** and **banana-shaped** targets:
+Full implementations of:
 
-- Metropolis–Hastings (MH)  
-- Adaptive Metropolis (AM)  
-- Delayed Rejection (DR)  
-- Delayed Rejection Adaptive Metropolis (DRAM)  
+- Metropolis–Hastings  
+- Adaptive Metropolis  
+- Delayed Rejection  
+- DRAM  
 
-All diagnostics: burn-in, mixing, autocorrelation, integrated autocorrelation, and ESS, are derived in the
-MH diagnostics notebook and reused across the remaining algorithms.
+Applied to Gaussian and banana-shaped targets.  
+Includes Laplace initialization, covariance adaptation, mixing behavior, autocorrelation diagnostics, and ESS analysis.
 
-Below is a DRAM example on the banana-shaped target.
+<div align="center">
+  <img src="images/mcmc/Banana_and_LaplaceApproximation.png" width="70%">
+  <br>
+  <i>Laplace approximation guiding initialization.</i>
+</div>
 
-### Target and Laplace Initialization
-<p align="center">
-  <img src="images/mcmc/Banana_and_LaplaceApproximation.png" height="230">
-</p>
+<div align="center">
+  <img src="images/mcmc/DRAM_samples2_banana.png" width="85%">
+</div>
 
-### DRAM Sample Exploration
-<p align="center">
-  <img src="images/mcmc/DRAM_samples2_banana.png" height="500">
-</p>
-
-### Mixing Behavior
-<p align="center">
-  <img src="images/mcmc/Mixing_DRAM_banana.png" height="230">
-</p>
-
-### Autocorrelation Diagnostics
-<p align="center">
-  <img src="images/mcmc/AutoCorr_DRAM_banana.png" height="230">
-</p>
+<div align="center">
+  <img src="images/mcmc/Mixing_DRAM_banana.png" width="49%">
+  <img src="images/mcmc/AutoCorr_DRAM_banana.png" width="49%">
+</div>
 
 ---
 
 # Notebook Gallery
 
-### Chapter 2: Sampling
-- [General Transformations](notebooks/ch02_sampling/ch02_general_transforms.ipynb)  
-- [Accept–Reject Sampling](notebooks/ch02_sampling/ch02_accept_reject.ipynb)  
-- [Exponential RVs](notebooks/ch02_sampling/exponential.ipynb)  
-- [Gamma RVs](notebooks/ch02_sampling/gamma.ipynb)
+### **Sampling**
+- ch02_general_transforms.ipynb  
+- ch02_accept_reject.ipynb  
+- exponential.ipynb  
+- gamma.ipynb  
 
-### Chapter 3: Importance Sampling
-- [Cauchy Tail Motivation](notebooks/ch03_importance_sampling/ch03_01_ImportanceSampling_CauchyTail_Motivation.ipynb)  
-- [Rare Event Estimation](notebooks/ch03_importance_sampling/ch03_03_ImportanceSampling_RareEvent_Estimation.ipynb)  
-- [Self-Normalized IS](notebooks/ch03_importance_sampling/ch03_04_SelfNormalized_ImportanceSampling.ipynb)
+### **Importance Sampling**
+- Cauchy tail motivation  
+- Rare-event estimation  
+- Self-normalized IS  
 
-### Chapter 4: Variance Reduction
-- [Control Variate Example](notebooks/ch04_variance_reduction/ch04_03_controlVariate_example1.ipynb)
+### **Variance Reduction**
+- Control variates example  
 
-### Chapter 6: Stochastic Processes
-- [Brownian Motion](notebooks/ch06_stochastic_processes/ch04_02_Brownian_Motion.ipynb)
+### **Stochastic Processes**
+- Brownian motion  
 
-### Chapter 5: MCMC
-- [MH Diagnostics](notebooks/ch05_mcmc/ch05_01_MH_Diagnostics.ipynb)  
-- [Adaptive Metropolis — Gaussian](notebooks/ch05_mcmc/ch05_02_AdaptiveMetropolis_Gaussian.ipynb)  
-- [Adaptive Metropolis — Banana](notebooks/ch05_mcmc/ch05_03_AdaptiveMetropolis_Banana.ipynb)  
-- [Delayed Rejection — Gaussian](notebooks/ch05_mcmc/ch05_04_DelayedRejection_Gaussian.ipynb)  
-- [Delayed Rejection — Banana](notebooks/ch05_mcmc/ch05_05_DelayedRejection_Banana.ipynb)  
-- [DRAM — Gaussian](notebooks/ch05_mcmc/ch05_06_DRAM_Gaussian.ipynb)  
-- [DRAM — Banana](notebooks/ch05_mcmc/ch05_07_DRAM_Banana.ipynb)
+### **MCMC**
+- MH diagnostics  
+- Adaptive Metropolis (Gaussian and Banana)  
+- Delayed Rejection  
+- DRAM  
 
 ---
 
 # PDF Chapter Library
 
-Full write-ups:
+Mathematical writeups include:
 
-- `reports/ch02_general_transforms.pdf`  
-- `reports/ch02_accept_reject.pdf`  
-- `reports/ch03_01_ImportantSampling_Motivation_weights.pdf`  
-- `reports/ch03_02_ImportanceSampling_MC_vs_IS_Variance_Comparison.pdf`  
-- `reports/ch03_03_ImportanceSampling_Rare_event_Estimation.pdf`  
-- `reports/ch03_04_SelfNormalized_ImportantSampling.pdf`  
-- `reports/ch04_01_ControlVariate_Foundations-and-Intution.pdf`  
-- `reports/ch04_02_Brownian_Motion.pdf`  
-- `reports/ch04_03_ControlVariate_example1.pdf`  
-- `reports/ch05_01_MarkovChain_Intro.pdf`  
-- `reports/ch05_02_Irreducibility.pdf`  
-- `reports/ch05_07_Metropolis-Hastings.pdf`
+- Sampling transformations  
+- Accept–Reject  
+- Importance Sampling  
+- Variance Reduction  
+- Brownian Motion  
+- Markov Chains  
+- Metropolis–Hastings  
+
+Written in a clean lecture-note style with derivations, proofs, and intuition.
 
 ---
 
@@ -178,27 +194,20 @@ Full write-ups:
 ```text
 MonteCarlo-Statistical-Methods/
 │
-├── animations/
-├── images/
-│   ├── sampling/
-│   ├── importance_sampling/
-│   ├── variance_reduction/
-│   ├── stochastic_processes/
-│   ├── mcmc/
-│   └── exponential/
-├── notebooks/
-│   ├── ch02_sampling/
-│   ├── ch03_importance_sampling/
-│   ├── ch04_variance_reduction/
-│   ├── ch05_mcmc/
-│   └── ch06_stochastic_processes/
-├── reports/
-├── src/
-├── README.md
-├── index.md
-└── pyproject.toml
-````
+├── animations/              # GIF/MP4 animations for visualizations
+├── images/                  # Figures for diagnostics and analysis
+├── notebooks/               # Jupyter notebooks for each chapter
+├── reports/                 # Mathematical PDF writeups
+├── src/                     # Full code implementation
+│   ├── sampling
+│   ├── importance_sampling
+│   ├── variance_reduction
+│   ├── mcmc
+│   ├── stochastic_processes
+│   └── utils
+└── README.md
 
+````
 ---
 
 # About Me
